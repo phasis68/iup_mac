@@ -77,7 +77,21 @@ static int macColorDlgPopup(Ihandle* ih, int x, int y)
   [panel makeFirstResponder:delegate];
   [panel setDelegate:delegate];
   [panel orderFrontRegardless];
-  if([NSApp runModalForWindow:panel]!=0)
+  NSModalSession session = [NSApp beginModalSessionForWindow:panel];
+  NSInteger result = 0;
+  for (;;) {
+    result = [NSApp runModalSession:session];
+    if(result != NSRunContinuesResponse)
+      break;
+    NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
+                untilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
+                inMode:NSDefaultRunLoopMode
+                dequeue:YES];
+    [NSApp sendEvent:event];
+    //[NSApp updateWindows];
+  }
+  [NSApp endModalSession:session];
+  if(result != 0)
   {
     iupAttribSetStr(ih, "VALUE", NULL);
     iupAttribSetStr(ih, "COLORTABLE", NULL);

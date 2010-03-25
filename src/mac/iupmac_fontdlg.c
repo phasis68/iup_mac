@@ -152,7 +152,20 @@ static int macFontDlgPopup(Ihandle* ih, int x, int y)
   [panel setDelegate:delegate];
   [panel orderFrontRegardless];
   [fontManager orderFrontFontPanel:delegate];
-  if([NSApp runModalForWindow:panel]!=0)
+  NSInteger result = 0;
+  for (;;) {
+    result = [NSApp runModalSession:session];
+    if(result != NSRunContinuesResponse)
+      break;
+    NSEvent *event = [NSApp nextEventMatchingMask:NSAnyEventMask
+                untilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]
+                inMode:NSDefaultRunLoopMode
+                dequeue:YES];
+    [NSApp sendEvent:event];
+    //[NSApp updateWindows];
+  }
+  [NSApp endModalSession:session];
+  if(result != 0)
   {
     iupAttribSetStr(ih, "VALUE", NULL);
     iupAttribSetStr(ih, "COLOR", NULL);
