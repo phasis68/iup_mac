@@ -25,12 +25,6 @@
 
 #include "iupmac_drv.h"
 
-
-
-#ifndef OFN_FORCESHOWHIDDEN
-#define OFN_FORCESHOWHIDDEN          0x10000000    /* Show All files including System and hidden files */
-#endif
-
 #define MAX_FILENAME_SIZE 65000
 #define IUP_PREVIEWCANVAS 3000
 
@@ -51,7 +45,7 @@ static void macFileDlgGetFolder(Ihandle *ih)
 
   if([op runModal] == NSOKButton) 
   {           
-	strcpy(buffer,[[op filename] UTF8String]);                       
+    strcpy(buffer,[[op filename] UTF8String]);                       
     iupAttribStoreStr(ih, "VALUE", buffer);
     iupAttribSetStr(ih, "STATUS", "0");	
   }  

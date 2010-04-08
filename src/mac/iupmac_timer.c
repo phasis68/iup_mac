@@ -48,9 +48,12 @@ void iupdrvTimerRun(Ihandle *ih)
   if (time_ms > 0)
   {
     MyTimerController *timerController = [MyTimerController new];
-    timerController.timer = [NSTimer scheduledTimerWithTimeInterval:(time_ms/1000.0) target:timerController 
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:(time_ms/1000.0) target:timerController 
         selector:@selector(targetMethod:) 
         userInfo:(id)[NSValue valueWithPointer:ih] repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer
+      forMode:NSModalPanelRunLoopMode];
+    timerController.timer = timer;
     ih->serial = (int)timerController;
   }
 }
